@@ -1,0 +1,9 @@
+streamlit
+supabase
+pandas
+requests
+python-dotenv
+geopy
+matplotlib
+scikit-learn
+email-validator
