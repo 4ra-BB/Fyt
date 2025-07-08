@@ -45,8 +45,6 @@ if submitted:
             }
         })
 
-        st.write("Resultado completo:", auth_res)
-
         if auth_res and auth_res.user:
             auth_user_id = auth_res.user.id
 
@@ -72,9 +70,9 @@ if submitted:
             if "error" not in db_res:
                 st.success("Usuario registrado correctamente. Ya puedes iniciar sesión.")
             else:
-                st.error(f"Error al guardar el usuario: {db_res['error']}")
+                st.error("Error al guardar el perfil. Intenta más tarde.")
         else:
-            st.warning("No se devolvió usuario, aunque no hubo excepción.")
-
+            st.error("No se pudo completar el registro. Intenta con otro correo.")
     except Exception as e:
-        st.error(f"⚠️ Error real detectado: {e}")
+        st.error(f"Error durante el registro: {e}")
+
