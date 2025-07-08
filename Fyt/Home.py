@@ -16,7 +16,7 @@ perfil = st.radio("Selecciona tu perfil:", ["Centro Deportivo", "Deportista"])
 
 if perfil == "Centro Deportivo":
     st.markdown("""
-    AComo centro deportivo podrás:
+    Como centro deportivo podrás:
     - Registrar tus instalaciones
     - Publicar las actividades y clases que ofreces
     """)
