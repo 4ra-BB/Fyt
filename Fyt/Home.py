@@ -20,7 +20,7 @@ if perfil == "Centro Deportivo":
     - Registrar tus instalaciones
     - Publicar las actividades y clases que ofreces
     """)
-    st.page_link("pages/1_RegistroCentro.py", label="👉 Ir al registro de Centro Deportivo")
+    st.page_link("pages/3_RegistroCentro.py", label="👉 Ir al registro de Centro Deportivo")
 
 elif perfil == "Deportista":
     st.markdown("""
@@ -28,4 +28,4 @@ elif perfil == "Deportista":
     - Crear tu perfil con tus preferencias
     - Encontrar actividades que se adapten a tus intereses
     """)
-    st.page_link("pages/2_RegistroUsuario.py", label="👉 Ir al registro de Deportista")
+    st.page_link("pages/4_RegistroUsuario.py", label="👉 Ir al registro de Deportista")
