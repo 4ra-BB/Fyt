@@ -26,7 +26,7 @@ dias = {
 }
 modalidades = {"Presencial": "presential", "Virtual": "virtual"}
 generos = {"Mixto": "mixed", "Hombre": "male", "Mujer": "female"}
-frecuencias = {"Semanal": "weekly", "Quincenal": "biweekly", "Mensual": "monthly", "Puntual": "one-time"}
+frecuencias de pago = {"Semanal": "weekly", "Quincenal": "biweekly", "Mensual": "monthly", "Puntual": "one-time"}
 
 # Mostrar actividades registradas
 st.subheader("Tus actividades registradas")
