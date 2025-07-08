@@ -46,9 +46,18 @@ with st.form("athlete_registration_form"):
     submitted = st.form_submit_button("Registrar")
 
     if submitted:
-        auth_res = register_user(email, password, role="athlete")  
-        
-        st.write("Resultado de register_user:")
+        try:
+    auth_res = supabase.auth.sign_up({
+        "email": email,
+        "password": password,
+        "options": {
+            "data": {"role": "athlete"}
+        }
+    })
+    st.write("Resultado completo:", auth_res)
+except Exception as e:
+    st.error(f"⚠️ Error al registrar: {e}")
+    st.stop()
         st.write(auth_res)
 
         if auth_res and auth_res.user:
