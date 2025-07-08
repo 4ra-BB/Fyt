@@ -47,11 +47,9 @@ with st.form("athlete_registration_form"):
 
     if submitted:
         auth_res = register_user(email, password, role="athlete")  
-st.write("Resultado de register_user:")
-st.write(auth_res)
-
-    if auth_res and auth_res.user:
-        ...
+        
+        st.write("Resultado de register_user:")
+        st.write(auth_res)
 
         if auth_res and auth_res.user:
             auth_user_id = auth_res.user.id
