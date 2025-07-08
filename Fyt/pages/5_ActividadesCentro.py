@@ -111,3 +111,6 @@ with st.form("activity_form"):
             st.success("Actividad creada correctamente.")
 
         st.rerun()
+
+from utils.session import show_logout
+show_logout()
