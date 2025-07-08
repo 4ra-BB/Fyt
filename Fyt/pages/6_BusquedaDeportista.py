@@ -1,83 +1,31 @@
 import streamlit as st
 from config import supabase
-from datetime import time
 
 st.title("Buscar Actividades Deportivas")
 
-# Validar sesión
 if "authenticated" not in st.session_state or not st.session_state["authenticated"] or st.session_state["role"] != "athlete":
     st.warning("Debes iniciar sesión como deportista para acceder.")
     st.stop()
 
 user_id = st.session_state["user_id"]
 
-# Diccionarios de mapeo ES ⇄ EN
-dias = {
-    "Lunes": "Monday", "Martes": "Tuesday", "Miércoles": "Wednesday",
-    "Jueves": "Thursday", "Viernes": "Friday", "Sábado": "Saturday", "Domingo": "Sunday"
-}
-modalidades = {"Presencial": "presential", "Virtual": "virtual"}
-generos = {"Mixto": "mixed", "Hombre": "male", "Mujer": "female"}
+# En el futuro: aquí se llamará al modelo de recomendación
+st.markdown("Aquí aparecerán tus recomendaciones personalizadas en cuanto el modelo esté implementado.")
 
-# --- Formulario de filtros ---
-with st.form("search_form"):
-    st.subheader("Filtra las actividades disponibles")
-    sport = st.text_input("Deporte (ej. Padel, Yoga, etc.)")
+# Por ahora: mostrar actividades como lista general (modo temporal)
+st.subheader("Actividades disponibles (modo exploración)")
 
-    dia_es = st.selectbox("Día de la semana", list(dias.keys()))
-    modality_es = st.selectbox("Modalidad", list(modalidades.keys()))
-    gender_es = st.selectbox("Preferencia de grupo", list(generos.keys()))
+activities = supabase.table("activities").select("*").execute().data
 
-    time_pref = st.time_input("¿A qué hora te gustaría entrenar?", value=time(18, 0))
-    price_limit = st.slider("Precio máximo (€)", 0, 50, 20)
-    category = st.text_input("Categoría / Nivel (opcional)", "")
-
-    submit = st.form_submit_button("Buscar actividades")
-
-# --- Ejecutar búsqueda ---
-if submit:
-    st.subheader("Resultados encontrados")
-
-    # Convertir a backend
-    weekday = dias[dia_es]
-    modality = modalidades[modality_es]
-    gender = generos[gender_es]
-
-    # Obtener todas las actividades
-    res = supabase.table("activities").select("*").execute()
-
-    if res.data:
-        resultados = []
-        for act in res.data:
-            if (
-                sport.lower() in str(act["sport_id"]).lower() or sport.lower() in act.get("category", "").lower()
-            ) and \
-               act["day"] == weekday and \
-               act["modality"] == modality and \
-               act["gender"] in [gender, "mixed"] and \
-               float(act["price"]) <= price_limit:
-
-                activity_hour = int(str(act["time"]).split(":")[0])
-                pref_hour = time_pref.hour
-                if abs(activity_hour - pref_hour) <= 1:
-                    resultados.append(act)
-
-        if resultados:
-            for act in resultados:
-                dia_ui = [k for k, v in dias.items() if v == act["day"]][0]
-                modalidad_ui = [k for k, v in modalidades.items() if v == act["modality"]][0]
-                genero_ui = [k for k, v in generos.items() if v == act["gender"]][0]
-
-                with st.expander(f"{dia_ui} - {act['time']}h - {act['category']} ({modalidad_ui})"):
-                    st.write(f"💸 Precio: {act['price']} €")
-                    st.write(f"🎯 Tipo: {act['type']}")
-                    st.write(f"🧍 Género: {genero_ui} | Edad: {act['min_age']} - {act['max_age']}")
-                    st.write(f"📍 Lat/Lon: {act.get('latitude', '-')}, {act.get('longitude', '-')}")
-                    st.write(f"📝 {act['description']}")
-        else:
-            st.info("No se encontraron actividades con esos filtros.")
-    else:
-        st.error("No se pudo acceder a la base de datos.")
+if not activities:
+    st.info("No hay actividades registradas aún.")
+else:
+    for act in activities:
+        with st.expander(f"{act['day']} - {act['time']}h - {act['category']} ({act['modality']})"):
+            st.write(f"💬 Forma de pago: {act['payment_type']}")
+            st.write(f"🎯 Tipo: {act['type']}")
+            st.write(f"🧍 Género: {act['gender']} | Edad: {act['min_age']} - {act['max_age']}")
+            st.write(f"📝 {act['description']}")
 
 from utils.session import show_logout
 show_logout()
