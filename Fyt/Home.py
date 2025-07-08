@@ -28,4 +28,4 @@ elif perfil == "Deportista":
     - Crear tu perfil con tus preferencias
     - Encontrar actividades que se adapten a tus intereses
     """)
-    st.page_link("pages/4_RegistroUsuario.py", label="👉 Ir al registro de Deportista")
+    st.page_link("pages/4_RegistroDeportista.py", label="👉 Ir al registro de Deportista")
