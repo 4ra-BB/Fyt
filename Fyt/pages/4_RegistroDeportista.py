@@ -45,23 +45,27 @@ with st.form("athlete_registration_form"):
 
     submitted = st.form_submit_button("Registrar")
 
-    if submitted:
-        try:
-    auth_res = supabase.auth.sign_up({
-        "email": email,
-        "password": password,
-        "options": {
-            "data": {"role": "athlete"}
-        }
-    })
-    st.write("Resultado completo:", auth_res)
-except Exception as e:
-    st.error(f"⚠️ Error al registrar: {e}")
-    st.stop()
-        st.write(auth_res)
+if submitted:
+    try:
+        auth_res = supabase.auth.sign_up({
+            "email": email,
+            "password": password,
+            "options": {
+                "data": {"role": "athlete"}
+            }
+        })
 
-        if auth_res and auth_res.user:
-            auth_user_id = auth_res.user.id
+        st.write("Resultado completo:", auth_res)
+        if auth_res.user:
+            st.success("Usuario creado correctamente.")
+        else:
+            st.warning("No se devolvió usuario, aunque no hubo excepción.")
+
+    except Exception as e:
+        st.error(f"⚠️ Error real detectado: {e}")
+
+    if auth_res and auth_res.user:
+        auth_user_id = auth_res.user.id
 
             user_data = {
                 "user_id": auth_user_id,
