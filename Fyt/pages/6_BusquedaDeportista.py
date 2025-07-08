@@ -78,3 +78,6 @@ if submit:
             st.info("No se encontraron actividades con esos filtros.")
     else:
         st.error("No se pudo acceder a la base de datos.")
+
+from utils.session import show_logout
+show_logout()
