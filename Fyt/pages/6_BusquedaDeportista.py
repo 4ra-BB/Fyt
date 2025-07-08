@@ -22,7 +22,6 @@ if not activities:
 else:
     for act in activities:
         with st.expander(f"{act['day']} - {act['time']}h - {act['category']} ({act['modality']})"):
-            st.write(f"💬 Forma de pago: {act['payment_type']}")
             st.write(f"🎯 Tipo: {act['type']}")
             st.write(f"🧍 Género: {act['gender']} | Edad: {act['min_age']} - {act['max_age']}")
             st.write(f"📝 {act['description']}")
