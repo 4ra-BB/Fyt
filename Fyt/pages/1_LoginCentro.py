@@ -27,14 +27,14 @@ if not st.session_state["authenticated"] and not st.session_state["show_reset"]:
                 st.session_state["email"] = user["email"]
                 st.session_state["role"] = user["role"]
                 st.success("Sesión iniciada correctamente.")
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("Credenciales incorrectas, por favor, revisa los datos.")
 
     with col2:
         if st.button("¿Olvidaste tu contraseña?"):
             st.session_state["show_reset"] = True
-            st.experimental_rerun()
+            st.rerun()
 
 # FORMULARIO DE RECUPERACIÓN
 elif st.session_state["show_reset"]:
@@ -50,7 +50,7 @@ elif st.session_state["show_reset"]:
 
     if st.button("Volver al inicio de sesión"):
         st.session_state["show_reset"] = False
-        st.experimental_rerun()
+        st.rerun()
 
 # YA LOGUEADO
 elif st.session_state["authenticated"]:
