@@ -1,0 +1,13 @@
+from supabase import create_client
+
+url = "https://TU-PROYECTO.supabase.co"
+key = "TU-CLAVE-ANON"
+supabase = create_client(url, key)
+
+res = supabase.auth.sign_up({
+    "email": "test123@fyt.com",
+    "password": "test123",
+    "options": {"data": {"role": "athlete"}}
+})
+
+print(res)
