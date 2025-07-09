@@ -19,21 +19,20 @@ if not venue_info:
 
 venue_id = venue_info["venue_id"]
 
-# Diccionarios
+# Cargar lista de deportes desde Supabase
+sports_data = supabase.table("sports").select("sport_id, name").execute()
+if not sports_data.data:
+    st.error("No se pudo cargar la lista de deportes.")
+    st.stop()
+sports_dict = {item['name']: item['sport_id'] for item in sports_data.data}
+
+# Diccionarios fijos
 dias = {
     "Lunes": "Monday", "Martes": "Tuesday", "Miércoles": "Wednesday",
     "Jueves": "Thursday", "Viernes": "Friday", "Sábado": "Saturday", "Domingo": "Sunday"
 }
 modalidades = {"Presencial": "presential", "Virtual": "virtual"}
 generos = {"Mixto": "mixed", "Hombre": "male", "Mujer": "female"}
-sports_dict = {
-    "Fútbol": 1,
-    "Tenis": 2,
-    "Pádel": 3,
-    "Yoga": 4,
-    "Running": 5,
-    "Otro": 6
-}
 
 # Mostrar actividades registradas
 st.subheader("Tus actividades registradas")
@@ -46,17 +45,16 @@ else:
     for act in activities:
         with st.expander(f"🗓 {act['day']} - {act['time']}h | {act['category']} ({act['modality']})"):
             st.write(f"Deporte ID: {act['sport_id']}")
-            st.write(f"💬 Forma de pago: {act['payment_type']}")
             st.write(f"Descripción: {act['description']}")
             col1, col2 = st.columns(2)
             with col1:
                 if st.button(f"🗑 Eliminar", key=f"del_{act['acti_id']}"):
                     delete_data("activities", act["acti_id"], id_field="acti_id")
-                    st.experimental_rerun()
+                    st.rerun()
             with col2:
                 if st.button(f"✏️ Editar", key=f"edit_{act['acti_id']}"):
                     st.session_state["edit_activity"] = act
-                    st.experimental_rerun()
+                    st.rerun()
 
 # Crear/Editar actividad
 if "edit_activity" in st.session_state:
@@ -80,7 +78,6 @@ with st.form("activity_form"):
     max_age = st.number_input("Edad máxima", min_value=1, max_value=99, value=activity_data.get("max_age", 99))
     spots = st.number_input("Plazas disponibles", min_value=1, max_value=100, value=activity_data.get("spots", 10))
     requires_registration = st.checkbox("Requiere registro previo", value=activity_data.get("requires_registration", False))
-    payment_type = st.text_area("¿Cómo se cobra esta actividad? (ej. 10 €/clase o 50 €/mes)", value=activity_data.get("payment_type", ""))
     description = st.text_area("Descripción de la actividad", value=activity_data.get("description", ""))
 
     submitted = st.form_submit_button("Guardar actividad")
@@ -100,7 +97,6 @@ with st.form("activity_form"):
             "max_age": max_age,
             "spots": spots,
             "requires_registration": requires_registration,
-            "payment_type": payment_type,
             "description": description
         }
 
@@ -112,7 +108,4 @@ with st.form("activity_form"):
             insert_data("activities", new_data)
             st.success("Actividad creada correctamente.")
 
-        st.experimental_rerun()
-
-from utils.session import show_logout
-show_logout()
+        st.rerun()
