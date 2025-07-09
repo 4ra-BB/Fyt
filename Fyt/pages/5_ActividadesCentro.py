@@ -19,12 +19,18 @@ if not venue_info:
 
 venue_id = venue_info["venue_id"]
 
-# Cargar lista de deportes desde Supabase
-sports_data = supabase.table("sports").select("sport_id, name").execute()
-if not sports_data.data:
-    st.error("No se pudo cargar la lista de deportes.")
+# Cargar listas desde Supabase
+sports_data = supabase.table("sports").select("sport_id, name").execute().data
+types_data = supabase.table("type").select("type_id, name").execute().data
+categories_data = supabase.table("category").select("id_sport, category").execute().data
+
+if not sports_data or not types_data or not categories_data:
+    st.error("No se pudieron cargar las listas desde Supabase.")
     st.stop()
-sports_dict = {item['name']: item['sport_id'] for item in sports_data.data}
+
+sports_dict = {item["name"]: item["sport_id"] for item in sports_data}
+types_dict = {item["name"]: item["type_id"] for item in types_data}
+categories_dict = {item["category"]: item["id_sport"] for item in categories_data}
 
 # Diccionarios fijos
 dias = {
@@ -67,12 +73,17 @@ else:
 with st.form("activity_form"):
     sport_name = st.selectbox("Deporte", list(sports_dict.keys()))
     sport_id = sports_dict[sport_name]
+
+    type_name = st.selectbox("Tipo de actividad", list(types_dict.keys()))
+    type_id = types_dict[type_name]
+
+    category_name = st.selectbox("Categoría / Nivel", list(categories_dict.keys()))
+    category_id = categories_dict[category_name]
+
     day_es = st.selectbox("Día", list(dias.keys()), index=0)
     time = st.time_input("Hora de inicio", value=activity_data.get("time"))
     duration = st.number_input("Duración (min)", min_value=15, step=15, value=activity_data.get("duration", 60))
     modality_es = st.selectbox("Modalidad", list(modalidades.keys()), index=0)
-    type_ = st.text_input("Tipo (recreativo, federado, etc)", value=activity_data.get("type", ""))
-    category = st.text_input("Categoría / Nivel", value=activity_data.get("category", ""))
     gender_es = st.selectbox("Género", list(generos.keys()), index=0)
     min_age = st.number_input("Edad mínima", min_value=0, max_value=99, value=activity_data.get("min_age", 0))
     max_age = st.number_input("Edad máxima", min_value=1, max_value=99, value=activity_data.get("max_age", 99))
@@ -86,12 +97,12 @@ with st.form("activity_form"):
         new_data = {
             "venue_id": venue_id,
             "sport_id": sport_id,
+            "type": type_id,
+            "category": category_id,
             "day": dias[day_es],
             "time": str(time),
             "duration": duration,
             "modality": modalidades[modality_es],
-            "type": type_,
-            "category": category,
             "gender": generos[gender_es],
             "min_age": min_age,
             "max_age": max_age,
